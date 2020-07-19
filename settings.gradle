@@ -1,0 +1,2 @@
+rootProject.name='GDG Android Webinar 7'
+include ':app'
