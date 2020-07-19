@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">GDG Android Webinar 7</string>
+    <string name="calendar_name">Calendar name</string>
+    <string name="add_calendar">Add calendar</string>
+    <string name="event_title">Event title</string>
+    <string name="event_description">Event description</string>
+    <string name="has_periodic_updates">Listen for periodic updates</string>
+    <string name="add_event">Add event</string>
 </resources>
