@@ -40,9 +40,11 @@ class MainActivity : AppCompatActivity() {
         )
 
         registerCalendarReceiver()
+        //CalendarJobService.scheduleCalendarJob(this)
 
         periodicUpdateSwitch.setOnCheckedChangeListener { _, isChecked ->
             hasPeriodicUpdates = isChecked
+            CalendarJobService.TRIGGER_PERIODIC_JOB = hasPeriodicUpdates
         }
 
         addCalendarButton.setOnClickListener {
