@@ -3,9 +3,12 @@ package com.example.gdgandroidwebinar7
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -21,6 +24,10 @@ class MainActivity : AppCompatActivity() {
         CalendarManager()
     }
 
+    private val calendarReceiver by lazy {
+        CalendarUpdateReceiver()
+    }
+
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             CALENDAR_REQUEST_CODE
         )
 
+        registerCalendarReceiver()
 
         periodicUpdateSwitch.setOnCheckedChangeListener { _, isChecked ->
             hasPeriodicUpdates = isChecked
@@ -68,7 +76,11 @@ class MainActivity : AppCompatActivity() {
                     )
                     Toast.makeText(this@MainActivity, "Event added", Toast.LENGTH_LONG).show()
                 } ?: run {
-                    Toast.makeText(this@MainActivity, "No calendar with this name", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "No calendar with this name",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -78,6 +90,20 @@ class MainActivity : AppCompatActivity() {
         ) {
             calendarManager.getCalendars(this)
         }
+    }
+
+    private fun registerCalendarReceiver() {
+        val filter = IntentFilter(Intent.ACTION_PROVIDER_CHANGED).apply {
+            addDataScheme("content")
+            addDataAuthority(CalendarContract.Calendars.CONTENT_URI.host, null)
+        }
+
+        registerReceiver(calendarReceiver, filter)
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(calendarReceiver)
+        super.onDestroy()
     }
 
     @SuppressLint("MissingPermission")
